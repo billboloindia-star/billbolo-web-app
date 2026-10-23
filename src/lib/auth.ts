@@ -12,12 +12,19 @@ export interface AuthUser {
   business_name: string;
 }
 
+export const SESSION_UPDATED_EVENT = "billbolo-session-updated";
+
 export function saveSession(token: string, user: AuthUser) {
   try {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   } catch {
     // localStorage unavailable (private browsing etc) - session just won't persist
+  }
+  // localStorage's own "storage" event only fires in OTHER tabs, not this one -
+  // dispatch our own so same-tab listeners (e.g. the nav bar) can react too.
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(SESSION_UPDATED_EVENT));
   }
 }
 

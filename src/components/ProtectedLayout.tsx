@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { AuthUser, clearSession, getToken, getUser } from "@/lib/auth";
+import { AuthUser, SESSION_UPDATED_EVENT, clearSession, getToken, getUser } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/clients", label: "Clients" },
   { href: "/expenses", label: "Expenses" },
   { href: "/ledger", label: "Ledger" },
+  { href: "/profile", label: "Profile" },
 ];
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -27,6 +28,10 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     }
     setUser(storedUser);
     setChecked(true);
+
+    const onSessionUpdated = () => setUser(getUser());
+    window.addEventListener(SESSION_UPDATED_EVENT, onSessionUpdated);
+    return () => window.removeEventListener(SESSION_UPDATED_EVENT, onSessionUpdated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
