@@ -243,12 +243,26 @@ export default function Home() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-full.svg" alt="BillBolo" className="h-8 w-auto" />
           </a>
-          <a
-            href="https://billbolo.in"
-            className="text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors"
-          >
-            ← Back to site
-          </a>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://billbolo.in"
+              className="text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors hidden sm:inline"
+            >
+              ← Back to site
+            </a>
+            <a
+              href="/login"
+              className="text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors"
+            >
+              Log in
+            </a>
+            <a
+              href="/signup"
+              className="text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded-lg transition-colors"
+            >
+              Sign up
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -503,16 +517,20 @@ export default function Home() {
 
             <div className="bg-gradient-to-br from-sky-600 to-blue-700 rounded-xl p-5 text-center">
               <p className="text-white font-semibold mb-3">
-                Loved it? Get unlimited quotations on WhatsApp.
+                Loved it? Save your history, track clients and who owes you — free.
               </p>
               <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/signup"
                 className="inline-block bg-white text-sky-700 font-bold px-6 py-2.5 rounded-lg hover:shadow-lg transition-shadow"
               >
-                Message BillBolo on WhatsApp →
+                Create your free account →
               </a>
+              <p className="text-white/70 text-xs mt-3">
+                Prefer WhatsApp?{" "}
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="underline">
+                  Message BillBolo
+                </a>
+              </p>
             </div>
           </div>
         )}
