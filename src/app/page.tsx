@@ -85,11 +85,9 @@ export default function Home() {
       {/* Nav */}
       <nav className="border-b border-sky-100 bg-white/80 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a
-            href="https://billbolo.in"
-            className="text-xl font-extrabold bg-gradient-to-r from-sky-600 to-blue-700 bg-clip-text text-transparent"
-          >
-            BillBolo
+          <a href="https://billbolo.in" className="flex items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-full.svg" alt="BillBolo" className="h-8 w-auto" />
           </a>
           <a
             href="https://billbolo.in"

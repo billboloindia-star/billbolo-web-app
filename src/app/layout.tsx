@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "BillBolo — Try It Free",
   description:
     "Generate a sample quotation in seconds. No signup. See how BillBolo works, then move to the WhatsApp bot for unlimited use.",
+  icons: {
+    icon: "/logo-icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
