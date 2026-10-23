@@ -71,7 +71,6 @@ export default function ExpensesPage() {
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          capture="environment"
           onChange={handleFileSelected}
           className="hidden"
           id="expense-photo-input"
