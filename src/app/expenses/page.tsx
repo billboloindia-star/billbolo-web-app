@@ -4,12 +4,43 @@ import { useEffect, useRef, useState } from "react";
 import ProtectedLayout from "@/components/ProtectedLayout";
 import { authFetch } from "@/lib/auth";
 
+interface LineItem {
+  item_name: string;
+  quantity: number;
+  rate: number;
+  unit: string;
+  amount: number;
+  hsn_code: string | null;
+}
+
 interface Expense {
   expense_id: string;
   vendor: string;
   amount: number;
   notes: string;
+  items: LineItem[];
   created_at: string;
+  seller_name: string;
+  seller_gstin: string;
+  seller_address: string;
+  billing_address: string;
+  shipping_address: string;
+  order_date: string;
+}
+
+function hasDetails(exp: Expense): boolean {
+  return Boolean(
+    exp.seller_gstin ||
+      exp.seller_address ||
+      exp.billing_address ||
+      exp.shipping_address ||
+      exp.order_date ||
+      (exp.items || []).some((i) => i.hsn_code)
+  );
+}
+
+function formatInr(amount: number): string {
+  return amount.toLocaleString("en-IN", { maximumFractionDigits: 2 });
 }
 
 export default function ExpensesPage() {
@@ -18,6 +49,14 @@ export default function ExpensesPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editVendor, setEditVendor] = useState("");
+  const [editAmount, setEditAmount] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   async function loadExpenses() {
     setLoading(true);
@@ -61,6 +100,48 @@ export default function ExpensesPage() {
     }
   }
 
+  function startEdit(exp: Expense) {
+    setEditingId(exp.expense_id);
+    setEditVendor(exp.vendor);
+    setEditAmount(String(exp.amount));
+    setEditNotes(exp.notes);
+    setEditError(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditError(null);
+  }
+
+  async function handleSaveEdit(expenseId: string) {
+    setSaving(true);
+    setEditError(null);
+    try {
+      const res = await authFetch(`/api/expenses/${expenseId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vendor: editVendor, amount: parseFloat(editAmount), notes: editNotes }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setEditError(data.error || "Something went wrong.");
+        return;
+      }
+      setEditingId(null);
+      await loadExpenses();
+    } catch {
+      setEditError("Couldn't reach the server.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(expenseId: string) {
+    if (!confirm("Delete this expense? This can't be undone.")) return;
+    await authFetch(`/api/expenses/${expenseId}`, { method: "DELETE" });
+    await loadExpenses();
+  }
+
   return (
     <ProtectedLayout>
       <h1 className="text-xl font-bold text-slate-900">Expenses</h1>
@@ -101,19 +182,142 @@ export default function ExpensesPage() {
           <p className="text-sm text-slate-400">No expenses logged yet.</p>
         ) : (
           <div className="divide-y divide-slate-100">
-            {expenses.map((exp) => (
-              <div key={exp.expense_id} className="flex items-center justify-between py-2.5">
-                <div>
-                  <p className="text-sm font-medium text-slate-900">{exp.vendor || "Expense"}</p>
-                  <p className="text-xs text-slate-400">
-                    {new Date(exp.created_at).toLocaleString("en-IN")} {exp.notes && `· ${exp.notes}`}
-                  </p>
+            {expenses.map((exp) => {
+              const hsnItems = (exp.items || []).filter((i) => i.hsn_code);
+              const isEditing = editingId === exp.expense_id;
+
+              return (
+                <div key={exp.expense_id} className="py-3">
+                  {isEditing ? (
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
+                        <input
+                          type="text"
+                          value={editVendor}
+                          onChange={(e) => setEditVendor(e.target.value)}
+                          placeholder="Vendor"
+                          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                        />
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          value={editAmount}
+                          onChange={(e) => setEditAmount(e.target.value)}
+                          placeholder="Amount (₹)"
+                          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        value={editNotes}
+                        onChange={(e) => setEditNotes(e.target.value)}
+                        placeholder="Notes"
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleSaveEdit(exp.expense_id)}
+                          disabled={saving}
+                          className="rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-xs font-semibold px-3 py-1.5 shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+                        >
+                          {saving ? "Saving…" : "Save"}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="rounded-lg border border-slate-200 text-slate-600 text-xs font-medium px-3 py-1.5 hover:bg-slate-50 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      {editError && <p className="text-xs text-red-600">{editError}</p>}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-slate-900">{exp.vendor || "Expense"}</p>
+                          <p className="text-xs text-slate-400">
+                            {new Date(exp.created_at).toLocaleString("en-IN")} {exp.notes && `· ${exp.notes}`}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <p className="text-sm font-semibold text-slate-900">₹{formatInr(exp.amount)}</p>
+                          {hasDetails(exp) && (
+                            <button
+                              onClick={() =>
+                                setExpandedId(expandedId === exp.expense_id ? null : exp.expense_id)
+                              }
+                              className="text-xs font-medium text-sky-600 hover:text-sky-700"
+                            >
+                              {expandedId === exp.expense_id ? "Hide" : "Details"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => startEdit(exp)}
+                            className="text-xs font-medium text-sky-600 hover:text-sky-700"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(exp.expense_id)}
+                            className="text-xs font-medium text-slate-400 hover:text-red-600 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+
+                      {expandedId === exp.expense_id && (
+                        <div className="mt-2.5 bg-slate-50 rounded-lg p-3 text-xs text-slate-600 space-y-1.5">
+                          {exp.seller_name && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Seller:</span> {exp.seller_name}
+                              {exp.seller_gstin && ` · GSTIN: ${exp.seller_gstin}`}
+                            </p>
+                          )}
+                          {exp.seller_address && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Seller address:</span>{" "}
+                              {exp.seller_address}
+                            </p>
+                          )}
+                          {exp.order_date && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Order date:</span> {exp.order_date}
+                            </p>
+                          )}
+                          {exp.billing_address && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Billing address:</span>{" "}
+                              {exp.billing_address}
+                            </p>
+                          )}
+                          {exp.shipping_address && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Shipping address:</span>{" "}
+                              {exp.shipping_address}
+                            </p>
+                          )}
+                          {hsnItems.length > 0 && (
+                            <div>
+                              <span className="font-semibold text-slate-700">HSN codes:</span>
+                              <ul className="list-disc list-inside">
+                                {hsnItems.map((i, idx) => (
+                                  <li key={idx}>
+                                    {i.item_name} — {i.hsn_code}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-                <p className="text-sm font-semibold text-slate-900">
-                  ₹{exp.amount.toLocaleString("en-IN")}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
