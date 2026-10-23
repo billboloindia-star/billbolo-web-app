@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -18,7 +18,18 @@ export const metadata: Metadata = {
     "Generate a sample quotation in seconds. No signup. See how BillBolo works, then move to the WhatsApp bot for unlimited use.",
   icons: {
     icon: "/logo-icon.svg",
+    apple: "/icon-192.png",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BillBolo",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0284c7",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

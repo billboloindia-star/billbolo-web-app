@@ -63,10 +63,10 @@ export default function ExpensesPage() {
 
   return (
     <ProtectedLayout>
-      <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Expenses</h1>
-      <p className="text-slate-500 mb-6">Photograph a bill or receipt — we&apos;ll read the amount automatically.</p>
+      <h1 className="text-xl font-bold text-slate-900">Expenses</h1>
+      <p className="text-sm text-slate-500 mb-5">Photograph a bill or receipt — we&apos;ll read the amount automatically.</p>
 
-      <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4">
         <input
           ref={fileInputRef}
           type="file"
@@ -78,12 +78,12 @@ export default function ExpensesPage() {
         />
         <label
           htmlFor="expense-photo-input"
-          className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed border-sky-200 rounded-xl py-10 cursor-pointer hover:bg-sky-50 transition-colors ${
+          className={`flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-sky-200 rounded-lg py-8 cursor-pointer hover:bg-sky-50 transition-colors ${
             uploading ? "opacity-50 pointer-events-none" : ""
           }`}
         >
-          <span className="text-3xl">📸</span>
-          <span className="font-semibold text-sky-700">
+          <span className="text-2xl">📸</span>
+          <span className="text-sm font-semibold text-sky-700">
             {uploading ? "Reading receipt…" : "Tap to photograph a bill/receipt"}
           </span>
         </label>
@@ -94,8 +94,8 @@ export default function ExpensesPage() {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6">
-        <h2 className="text-lg font-bold text-slate-900 mb-4">Logged expenses</h2>
+      <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
+        <h2 className="text-sm font-bold text-slate-900 mb-3">Logged expenses</h2>
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
         ) : expenses.length === 0 ? (
@@ -103,14 +103,14 @@ export default function ExpensesPage() {
         ) : (
           <div className="divide-y divide-slate-100">
             {expenses.map((exp) => (
-              <div key={exp.expense_id} className="flex items-center justify-between py-3">
+              <div key={exp.expense_id} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="font-medium text-slate-900">{exp.vendor || "Expense"}</p>
+                  <p className="text-sm font-medium text-slate-900">{exp.vendor || "Expense"}</p>
                   <p className="text-xs text-slate-400">
                     {new Date(exp.created_at).toLocaleString("en-IN")} {exp.notes && `· ${exp.notes}`}
                   </p>
                 </div>
-                <p className="font-semibold text-slate-900">
+                <p className="text-sm font-semibold text-slate-900">
                   ₹{exp.amount.toLocaleString("en-IN")}
                 </p>
               </div>

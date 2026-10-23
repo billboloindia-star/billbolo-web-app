@@ -74,14 +74,14 @@ export default function ClientsPage() {
 
   return (
     <ProtectedLayout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Clients</h1>
-          <p className="text-slate-500">Save clients once, reuse them on future quotations.</p>
+          <h1 className="text-xl font-bold text-slate-900">Clients</h1>
+          <p className="text-sm text-slate-500">Save clients once, reuse them on future quotations.</p>
         </div>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold px-5 py-2.5 shadow-md hover:shadow-lg transition-all"
+          className="rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-sm font-semibold px-4 py-2 shadow-md shadow-sky-200 hover:shadow-lg hover:shadow-sky-300 transition-all shrink-0"
         >
           {showForm ? "Cancel" : "+ Add client"}
         </button>
@@ -90,23 +90,23 @@ export default function ClientsPage() {
       {showForm && (
         <form
           onSubmit={handleAdd}
-          className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 mb-6 space-y-4"
+          className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4 space-y-3"
         >
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-3">
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Client name"
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Phone (optional)"
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
           </div>
           <input
@@ -114,12 +114,12 @@ export default function ClientsPage() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes (optional)"
-            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
           />
           <button
             type="submit"
             disabled={saving}
-            className="rounded-xl bg-sky-600 text-white font-semibold px-5 py-2.5 hover:bg-sky-700 transition-colors disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-sm font-semibold px-4 py-2 shadow-md shadow-sky-200 hover:shadow-lg hover:shadow-sky-300 transition-all disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save client"}
           </button>
@@ -127,7 +127,7 @@ export default function ClientsPage() {
         </form>
       )}
 
-      <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6">
+      <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
         ) : clients.length === 0 ? (
@@ -135,16 +135,16 @@ export default function ClientsPage() {
         ) : (
           <div className="divide-y divide-slate-100">
             {clients.map((c) => (
-              <div key={c.client_id} className="flex items-center justify-between py-3">
+              <div key={c.client_id} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="font-medium text-slate-900">{c.name}</p>
+                  <p className="text-sm font-medium text-slate-900">{c.name}</p>
                   <p className="text-xs text-slate-400">
                     {c.phone} {c.notes && `· ${c.notes}`}
                   </p>
                 </div>
                 <button
                   onClick={() => handleDelete(c.client_id)}
-                  className="text-sm text-slate-400 hover:text-red-600 transition-colors"
+                  className="text-xs font-medium text-slate-400 hover:text-red-600 transition-colors"
                 >
                   Remove
                 </button>

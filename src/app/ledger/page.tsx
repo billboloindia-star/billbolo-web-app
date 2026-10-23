@@ -96,30 +96,30 @@ export default function LedgerPage() {
 
   return (
     <ProtectedLayout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5 gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Ledger</h1>
-          <p className="text-slate-500">Track who owes you money, and follow up before it&apos;s forgotten.</p>
+          <h1 className="text-xl font-bold text-slate-900">Ledger</h1>
+          <p className="text-sm text-slate-500">Track who owes you money, and follow up before it&apos;s forgotten.</p>
         </div>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold px-5 py-2.5 shadow-md hover:shadow-lg transition-all"
+          className="rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-sm font-semibold px-4 py-2 shadow-md shadow-sky-200 hover:shadow-lg hover:shadow-sky-300 transition-all shrink-0"
         >
           {showForm ? "Cancel" : "+ Add entry"}
         </button>
       </div>
 
       {summary && (
-        <div className="grid sm:grid-cols-2 gap-4 mb-6">
-          <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5">
-            <p className="text-sm text-slate-500 mb-1">Total owed to you</p>
-            <p className="text-2xl font-extrabold text-slate-900">
+        <div className="grid sm:grid-cols-2 gap-3 mb-4">
+          <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
+            <p className="text-xs font-medium text-slate-500 mb-1">Total owed to you</p>
+            <p className="text-xl font-bold text-slate-900">
               ₹{summary.total_owed.toLocaleString("en-IN")}
             </p>
           </div>
-          <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5">
-            <p className="text-sm text-slate-500 mb-1">Overdue</p>
-            <p className={`text-2xl font-extrabold ${summary.overdue_count > 0 ? "text-red-600" : "text-slate-900"}`}>
+          <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
+            <p className="text-xs font-medium text-slate-500 mb-1">Overdue</p>
+            <p className={`text-xl font-bold ${summary.overdue_count > 0 ? "text-red-600" : "text-slate-900"}`}>
               {summary.overdue_count}
             </p>
           </div>
@@ -129,16 +129,16 @@ export default function LedgerPage() {
       {showForm && (
         <form
           onSubmit={handleAdd}
-          className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 mb-6 space-y-4"
+          className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4 space-y-3"
         >
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-3">
             <input
               type="text"
               required
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
               placeholder="Who owes you?"
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
             <input
               type="number"
@@ -148,28 +148,28 @@ export default function LedgerPage() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Amount (₹)"
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-3">
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What for? (optional)"
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
           </div>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-xl bg-sky-600 text-white font-semibold px-5 py-2.5 hover:bg-sky-700 transition-colors disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 text-white text-sm font-semibold px-4 py-2 shadow-md shadow-sky-200 hover:shadow-lg hover:shadow-sky-300 transition-all disabled:opacity-50"
           >
             {saving ? "Saving…" : "Add to ledger"}
           </button>
@@ -177,7 +177,7 @@ export default function LedgerPage() {
         </form>
       )}
 
-      <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6">
+      <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
         ) : entries.length === 0 ? (
@@ -187,17 +187,17 @@ export default function LedgerPage() {
             {entries.map((entry) => {
               const overdue = isOverdue(entry);
               return (
-                <div key={entry.ledger_id} className="flex items-center justify-between py-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-slate-900">{entry.client_name}</p>
+                <div key={entry.ledger_id} className="flex items-center justify-between py-2.5 gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-sm font-medium text-slate-900">{entry.client_name}</p>
                       {entry.status === "paid" && (
-                        <span className="text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+                        <span className="text-[11px] font-semibold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full">
                           Paid
                         </span>
                       )}
                       {overdue && (
-                        <span className="text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full">
+                        <span className="text-[11px] font-semibold text-red-700 bg-red-50 px-1.5 py-0.5 rounded-full">
                           Overdue
                         </span>
                       )}
@@ -207,14 +207,14 @@ export default function LedgerPage() {
                       {entry.due_date && ` · due ${entry.due_date}`}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <p className="font-semibold text-slate-900">
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <p className="text-sm font-semibold text-slate-900">
                       ₹{entry.amount.toLocaleString("en-IN")}
                     </p>
                     {entry.status === "owed" && (
                       <button
                         onClick={() => handleMarkPaid(entry.ledger_id)}
-                        className="text-sm font-medium text-sky-600 hover:text-sky-700"
+                        className="text-xs font-medium text-sky-600 hover:text-sky-700"
                       >
                         Mark paid
                       </button>

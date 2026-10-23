@@ -206,8 +206,8 @@ export default function QuotationsPage() {
 
   return (
     <ProtectedLayout>
-      <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Quotations</h1>
-      <p className="text-slate-500 mb-6">Describe or record a new job to generate a branded PDF quotation.</p>
+      <h1 className="text-xl font-bold text-slate-900">Quotations</h1>
+      <p className="text-sm text-slate-500 mb-5">Describe or record a new job to generate a branded PDF quotation.</p>
 
       <div className="flex gap-2 mb-4 bg-slate-100 rounded-xl p-1 max-w-xs">
         <button
@@ -233,7 +233,7 @@ export default function QuotationsPage() {
       {mode === "text" ? (
         <form
           onSubmit={handleSubmitText}
-          className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 mb-8"
+          className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4"
         >
           <textarea
             value={text}
@@ -266,7 +266,7 @@ export default function QuotationsPage() {
           )}
         </form>
       ) : (
-        <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 mb-8">
+        <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4">
           <div className="flex flex-col items-center justify-center py-4">
             {recordingState === "idle" && (
               <>
@@ -333,8 +333,8 @@ export default function QuotationsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6">
-        <h2 className="text-lg font-bold text-slate-900 mb-4">History</h2>
+      <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4">
+        <h2 className="text-sm font-bold text-slate-900 mb-3">History</h2>
         {historyLoading ? (
           <p className="text-sm text-slate-400">Loading…</p>
         ) : history.length === 0 ? (
@@ -342,17 +342,17 @@ export default function QuotationsPage() {
         ) : (
           <div className="divide-y divide-slate-100">
             {history.map((q) => (
-              <div key={q.quotation_id} className="py-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-slate-900">{q.client_name || "Untitled"}</p>
+              <div key={q.quotation_id} className="py-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-900">{q.client_name || "Untitled"}</p>
                     <p className="text-xs text-slate-400">
                       {new Date(q.created_at).toLocaleString("en-IN")} · {q.items.length} item
                       {q.items.length !== 1 ? "s" : ""}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <p className="font-semibold text-slate-900">
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <p className="text-sm font-semibold text-slate-900">
                       ₹{q.grand_total.toLocaleString("en-IN")}
                     </p>
                     {q.pdf_url && (
@@ -360,7 +360,7 @@ export default function QuotationsPage() {
                         href={q.pdf_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm font-medium text-sky-600 hover:text-sky-700"
+                        className="text-xs font-medium text-sky-600 hover:text-sky-700"
                       >
                         PDF ↓
                       </a>
