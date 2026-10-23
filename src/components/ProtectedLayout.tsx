@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthUser, SESSION_UPDATED_EVENT, clearSession, getToken, getUser } from "@/lib/auth";
 import InstallPrompt from "@/components/InstallPrompt";
+import VoiceAssistant from "@/components/VoiceAssistant";
 
 function Icon({ path, className = "w-[18px] h-[18px]" }: { path: string; className?: string }) {
   return (
@@ -178,10 +179,11 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         </div>
       )}
 
-      <main className="flex-1 md:ml-60 px-4 sm:px-6 py-6">
+      <main className="flex-1 md:ml-60 px-4 sm:px-6 pt-6 pb-28 sm:pb-20">
         <div className="max-w-4xl mx-auto">{children}</div>
       </main>
       <InstallPrompt />
+      <VoiceAssistant />
     </div>
   );
 }
