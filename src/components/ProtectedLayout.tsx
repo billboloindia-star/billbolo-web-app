@@ -178,7 +178,9 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         </div>
       )}
 
-      <main className="flex-1 md:ml-60 px-4 sm:px-6 py-6 max-w-4xl">{children}</main>
+      <main className="flex-1 md:ml-60 px-4 sm:px-6 py-6">
+        <div className="max-w-4xl mx-auto">{children}</div>
+      </main>
       <InstallPrompt />
     </div>
   );
