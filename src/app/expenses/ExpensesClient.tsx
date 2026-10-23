@@ -88,7 +88,7 @@ export default function ExpensesClient() {
       const res = await authFetch("/api/expenses", { method: "POST", body: formData });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Couldn't read that bill/receipt image.");
+        setError(data.error || "Couldn't read that bill/receipt.");
         return;
       }
       await loadExpenses();
@@ -145,13 +145,13 @@ export default function ExpensesClient() {
   return (
     <ProtectedLayout>
       <h1 className="text-xl font-bold text-slate-900">Expenses</h1>
-      <p className="text-sm text-slate-500 mb-5">Photograph a bill or receipt — we&apos;ll read the amount automatically.</p>
+      <p className="text-sm text-slate-500 mb-5">Upload a photo or PDF of a bill or receipt — we&apos;ll read the amount automatically.</p>
 
       <div className="bg-white rounded-xl border border-sky-100 shadow-sky-100/60 p-4 mb-4">
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,application/pdf"
           onChange={handleFileSelected}
           className="hidden"
           id="expense-photo-input"
@@ -164,7 +164,7 @@ export default function ExpensesClient() {
         >
           <span className="text-2xl">📸</span>
           <span className="text-sm font-semibold text-sky-700">
-            {uploading ? "Reading receipt…" : "Tap to photograph a bill/receipt"}
+            {uploading ? "Reading receipt…" : "Tap to upload a bill/receipt (photo or PDF)"}
           </span>
         </label>
         {error && (
