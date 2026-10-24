@@ -26,7 +26,32 @@ interface Expense {
   billing_address: string;
   shipping_address: string;
   order_date: string;
+  category: string;
 }
+
+const EXPENSE_CATEGORIES = [
+  "Materials",
+  "Labour",
+  "Transport",
+  "Rent",
+  "Utilities",
+  "Equipment",
+  "Office Supplies",
+  "Professional Fees",
+  "Other",
+];
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Materials: "bg-orange-50 text-orange-700",
+  Labour: "bg-purple-50 text-purple-700",
+  Transport: "bg-blue-50 text-blue-700",
+  Rent: "bg-rose-50 text-rose-700",
+  Utilities: "bg-amber-50 text-amber-700",
+  Equipment: "bg-cyan-50 text-cyan-700",
+  "Office Supplies": "bg-teal-50 text-teal-700",
+  "Professional Fees": "bg-indigo-50 text-indigo-700",
+  Other: "bg-slate-100 text-slate-600",
+};
 
 function hasDetails(exp: Expense): boolean {
   return Boolean(
@@ -55,6 +80,7 @@ export default function ExpensesClient() {
   const [editVendor, setEditVendor] = useState("");
   const [editAmount, setEditAmount] = useState("");
   const [editNotes, setEditNotes] = useState("");
+  const [editCategory, setEditCategory] = useState("Other");
   const [saving, setSaving] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
 
@@ -105,6 +131,7 @@ export default function ExpensesClient() {
     setEditVendor(exp.vendor);
     setEditAmount(String(exp.amount));
     setEditNotes(exp.notes);
+    setEditCategory(exp.category || "Other");
     setEditError(null);
   }
 
@@ -120,7 +147,12 @@ export default function ExpensesClient() {
       const res = await authFetch(`/api/expenses/${expenseId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vendor: editVendor, amount: parseFloat(editAmount), notes: editNotes }),
+        body: JSON.stringify({
+          vendor: editVendor,
+          amount: parseFloat(editAmount),
+          notes: editNotes,
+          category: editCategory,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -215,6 +247,17 @@ export default function ExpensesClient() {
                         placeholder="Notes"
                         className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
                       />
+                      <select
+                        value={editCategory}
+                        onChange={(e) => setEditCategory(e.target.value)}
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                      >
+                        {EXPENSE_CATEGORIES.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleSaveEdit(exp.expense_id)}
@@ -236,7 +279,18 @@ export default function ExpensesClient() {
                     <>
                       <div className="flex items-center justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-slate-900">{exp.vendor || "Expense"}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-medium text-slate-900">{exp.vendor || "Expense"}</p>
+                            {exp.category && (
+                              <span
+                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${
+                                  CATEGORY_COLORS[exp.category] || CATEGORY_COLORS.Other
+                                }`}
+                              >
+                                {exp.category}
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-slate-400">
                             {new Date(exp.created_at).toLocaleString("en-IN")} {exp.notes && `· ${exp.notes}`}
                           </p>
