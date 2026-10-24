@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
-  "https://v24jdob9c0.execute-api.ap-south-1.amazonaws.com";
+  "https://api.billbolo.in";
 
 const WHATSAPP_URL = "https://wa.me/918123422932";
 

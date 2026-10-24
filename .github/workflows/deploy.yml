@@ -29,7 +29,7 @@ jobs:
 
       - run: npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://v24jdob9c0.execute-api.ap-south-1.amazonaws.com
+          NEXT_PUBLIC_API_URL: https://api.billbolo.in
 
       - uses: actions/upload-pages-artifact@v3
         with:

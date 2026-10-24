@@ -1,6 +1,6 @@
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
-  "https://v24jdob9c0.execute-api.ap-south-1.amazonaws.com";
+  "https://api.billbolo.in";
 
 const TOKEN_KEY = "billbolo_token";
 const USER_KEY = "billbolo_user";
